@@ -33,4 +33,4 @@ Hector JUSFORGUES
 ----
 NEWS
 ----
-2013-01-06 : project moved from google code to github
+2013-01-06 : project moved from google code to github (old address : http://code.google.com/p/hj-modulefactory/ )
