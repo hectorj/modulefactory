@@ -1,0 +1,12 @@
+<div style="float:left">
+	<a href="http://code.google.com/p/hj-modulefactory/issues/list" target="_blank" title="Bug report & Feature request">
+		Bug report & Feature request
+	</a>
+</div>
+<div style="text-align:right;margin-bottom:10px;">
+	<?php echo $this->getChildHtml('map_button') ?>&nbsp;<?php echo $this->getChildHtml('create_button') ?>
+</div>
+<?php echo $this->getFormHtml(); ?>
+<script type="text/javascript">
+	keepAliveUrl="<?php echo $this->getUrl('*/adminhtml_keepalive/index'); ?>";
+</script>

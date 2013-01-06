@@ -1,0 +1,13 @@
+<config>
+   <admin>
+      <routers>
+         <testmodule>
+            <use>admin</use>
+            <args>
+               <module>Unittestpackage_Testmodule</module>
+               <frontName>testadmin</frontName>
+            </args>
+         </testmodule>
+      </routers>
+   </admin>
+</config>

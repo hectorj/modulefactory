@@ -1,0 +1,176 @@
+<div id="messages">
+	<ul class="messages">
+		<li class="notice-msg">
+			<ul>
+				<li>
+					<span>Folders and files names may only contain [a-z A-Z 0-9] chars.</span>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+
+<table id="routersContainer">
+	<tr>
+		<td><label for="frontendRouter">Frontend router : </label></td><td><input class="input-text validate-strict" type="text" name="frontendRouter" id="frontendRouter" /></td>
+	</tr>
+	<tr>
+		<td><label for="adminRouter">Admin router : </label></td><td><input class="input-text validate-strict" type="text" name="adminRouter" id="adminRouter" /></td>
+	</tr>
+</table>
+
+<div id="ComponentsTree">
+	<?php echo $this->loadCurrentConfig(); ?>
+</div>
+
+<div id="ComponentsInputs"></div>
+<div id="ControllersInputs"></div>
+
+<div id="ComponentsPopup">
+	<p><label for="ComponentsPopupExtends">Extends : </label><select id="ComponentsPopupExtends"></select></p>
+	<p><label for="ComponentsPopupOverride">Override : </label><select id="ComponentsPopupOverride"><option value="0">No</option><option value="1">Yes</option></select></p>
+</div>
+<div id="ControllersPopup">
+	<p><label for="ControllersPopupType">Type : </label><select id="ControllersPopupType"><option value="frontend" selected="selected">Frontend</option><option value="admin">Admin</option></select></p>
+	<p><label for="ControllersPopupExtends">Extends : </label><select id="ControllersPopupExtends"></select></p>
+	<p><label for="ControllersPopupOverride0">URL to override : </label><input type="text" id="ControllersPopupOverride0" placeholder="router" />/<input type="text" id="ControllersPopupOverride1" placeholder="controller" />/<input type="text" id="ControllersPopupOverride2" placeholder="action" /></p>
+</div>
+<br />
+<p>
+	<a href="<?php echo $this->getUrl('*/*/map');?>">Re-build the existing components list</a> (be careful, this may take time, and you may lose your work in progress)
+</p>
+
+<script type="text/javascript">
+jquery('#ComponentsPopup').dialog({
+	autoOpen:false,
+	modal:true,
+	minWidth:1000,
+	buttons:{'Save':function(){alert('Save');}},
+	resizable:false,
+	draggable:false
+});
+jquery('#ControllersPopup').dialog({
+	autoOpen:false,
+	modal:true,
+	minWidth:1000,
+	buttons:{'Save':function(){alert('Save');}},
+	resizable:false,
+	draggable:false
+});
+moduleFactory.components.defaultExtends.model='<?php echo $this->getExtendsDefault('model');?>';
+moduleFactory.components.defaultExtends.helper='<?php echo $this->getExtendsDefault('helper');?>';
+moduleFactory.components.defaultExtends.block='<?php echo $this->getExtendsDefault('block');?>';
+moduleFactory.controllers.defaultExtends='<?php echo $this->getExtendsDefault('controller');?>';
+
+moduleFactory.components.extendsOptions.model='<?php echo $this->getComponentsOptions('model');?>';
+moduleFactory.components.extendsOptions.helper='<?php echo $this->getComponentsOptions('helper');?>';
+moduleFactory.components.extendsOptions.block='<?php echo $this->getComponentsOptions('block');?>';
+moduleFactory.controllers.extendsOptions='<?php echo $this->getComponentsOptions('controller');?>';
+var addComponentDir = function(node){
+	var rel;
+	if(node.attr('componentType')=='controller'){
+		rel = 'controller_directory';
+	} else {
+		rel = 'component_directory';
+	}
+	var child=jquery('#ComponentsTree').jstree('create_node', node, 'inside', {'attr':{'rel':rel, 'componentType':node.attr('componentType')}, 'data':'NewDir'}, function(child){this.open_node(node);this.rename(child);});
+}
+function dirname_check(str){
+	str=str.replace(/[^a-zA-Z0-9]/g, '');
+	return ucfirst(str);
+}
+function componentname_check(str){
+	str=str.replace(/[^a-zA-Z0-9]/g, '');
+	if(str.substr(str.length-3)=='php'){
+		str=str.substr(0, str.length-3);
+	}
+	str+='.php';
+	return ucfirst(str);
+}
+function controllername_check(str){
+	str=str.replace(/[^a-zA-Z0-9]/g, '');
+	if(str.substr(str.length-3)=='php'){
+		str=str.substr(0, str.length-3);
+	}
+	if(str.length>10 && str.substr(str.length-10)=='Controller'){
+		str=str.substr(0, str.length-10);
+	}
+	str+='Controller.php';
+	return ucfirst(str);
+}
+var renameComponent = function(event, data){
+	var type = data.rslt.obj.attr('rel');
+	var checkedName;
+	if(type=='controller_directory' || type=='component_directory'){
+		checkedName=dirname_check(data.rslt.new_name);
+	} else if(type=='component') {
+		checkedName=componentname_check(data.rslt.new_name);
+	} else {//type=='controller'
+		checkedName=controllername_check(data.rslt.new_name);
+	}
+	if(!checkedName.length){
+		jquery('#ComponentsTree').jstree('rename_node', data.rslt.obj, data.rslt.old_name);
+	} else {
+		if(checkedName!=data.rslt.new_name){
+			jquery('#ComponentsTree').jstree('rename_node', data.rslt.obj, checkedName);
+		}
+	}
+}
+var componentContextualMenu=function(obj){
+	var type = obj.attr('rel');
+	var actions={};
+	if(type=='controller_directory' || type=='component_directory' || type=='controller_root' || type=='component_root'){
+		if (type=='component_directory'|| type=='component_root'){
+			actions.addComponent={'label' :'Add a component', 'action':moduleFactory.components.addNew};
+		} else {
+			actions.addField={'label' :'Add a controller', 'action':moduleFactory.controllers.addNew};
+		}
+		actions.addDir={'label' :'Add a directory', 'action':addComponentDir};
+		if(type!='component_root' && type!='controller_root'){
+			actions.rename={'label':'Rename','action':function(node){this.rename(node)},'separator_before':true};
+			actions.remove={'label':'Delete','action':function(node){
+					if(confirm('Are you sure you want to delete this directory (and it\'s children) ?')){
+						var childrens=jquery(node).find('li');
+						if(childrens.length){
+							for(var i=0;i<childrens.length;i++){
+								if(jquery(childrens[i]).attr('rel')=='component'){
+									moduleFactory.components.remove(jquery(childrens[i]));
+								} else if (jquery(childrens[i]).attr('rel')=='controller'){
+									moduleFactory.controllers.remove(jquery(childrens[i]));
+								}
+							}
+						}
+						this.delete_node(node);
+					}
+				}
+			};
+		}
+	} else {
+		actions.rename={'label':'Rename','action':function(node){this.rename(node)}};
+		if(type=='component'){
+			actions.remove={'label':'Delete','action':function(node){if(confirm('Are you sure you want to delete this component ?')){moduleFactory.components.remove(node);}}};
+			actions.popup={'label':'Parameters','separator_before':true,'action':function(node){moduleFactory.components.items[node.attr('componentType')][node.attr('key')].openPopup()}}
+		} else {//type=='controller'
+			actions.remove={'label':'Delete','action':function(node){if(confirm('Are you sure you want to delete this controller ?')){moduleFactory.controllers.remove(node);}}};
+			actions.popup={'label':'Parameters','separator_before':true,'action':function(node){moduleFactory.controllers.items[node.attr('key')].openPopup()}}
+		}
+	}
+	
+	return actions;
+}
+jquery(document).ready(function(){
+	jquery('#ComponentsTree').bind('rename.jstree', renameComponent).jstree({'plugins' : ['html_data', 'ui', 'themes', 'crrm', 'contextmenu', 'types', 'xml_data', 'unique'],
+					'core':{'html_titles':true},
+					'types':{'valid_children':['component_root', 'controller_root'],'types':{
+							'component_root':{'valid_children' : [ 'component_directory', 'component' ]},
+							'component_directory':{'valid_children' : [ 'component_directory', 'component' ]},
+							'controller_root':{'valid_children' : [ 'controller_directory', 'controller' ]},
+							'controller_directory':{'valid_children' : [ 'controller_directory', 'controller' ]},
+							'component':{'valid_children' : [], 'icon':{'image':'<?php echo $this->getSkinUrl('images/php_ico.png') ?>'}},
+							'controller':{'valid_children' : [], 'icon':{'image':'<?php echo $this->getSkinUrl('images/php_ico.png') ?>'}}
+					}},
+					'contextmenu':{'select_node':true,'items':componentContextualMenu},
+					'unique':{'error_callback':function(n, p, f){alert('Duplicated element '+n);}}
+	});
+});
+</script>

@@ -1,0 +1,9 @@
+<config>
+   <global>
+      <blocks>
+         <testmodule>
+            <class>Unittestpackage_Testmodule_Block</class>
+         </testmodule>
+      </blocks>
+   </global>
+</config>

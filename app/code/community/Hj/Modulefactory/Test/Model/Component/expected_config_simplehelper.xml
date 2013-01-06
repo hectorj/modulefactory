@@ -1,0 +1,9 @@
+<config>
+   <global>
+      <helpers>
+         <testmodule>
+            <class>Unittestpackage_Testmodule_Helper</class>
+         </testmodule>
+      </helpers>
+   </global>
+</config>

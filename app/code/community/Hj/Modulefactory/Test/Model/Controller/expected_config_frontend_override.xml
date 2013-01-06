@@ -1,0 +1,10 @@
+<config>
+   <global>
+      <rewrite>
+         <unittestpackage_testmodule_indexcontroller>
+            <from>#catalog/product_compare#</from>
+            <to>/testfrontend/index/</to>
+         </unittestpackage_testmodule_indexcontroller>
+      </rewrite>
+   </global>
+</config>

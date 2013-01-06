@@ -1,0 +1,24 @@
+<config>
+   <global>
+      <resources>
+         <testmodule_setup>
+            <setup>
+               <module>Unittestpackage_Testmodule</module>
+            </setup>
+            <connection>
+               <use>core_setup</use>
+            </connection>
+         </testmodule_setup>
+         <testmodule_write>
+            <connection>
+               <use>core_write</use>
+            </connection>
+         </testmodule_write>
+         <testmodule_read>
+            <connection>
+               <use>core_read</use>
+            </connection>
+         </testmodule_read>
+      </resources>
+   </global>
+</config>

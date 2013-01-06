@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Hj_Modulefactory>
+			<version>0.1.0</version>
+		</Hj_Modulefactory>
+	</modules>
+	<global>
+		<models>
+			<modulefactory>
+				<class>Hj_Modulefactory_Model</class>
+			</modulefactory>
+		</models>
+		<helpers>
+			<modulefactory>
+				<class>Hj_Modulefactory_Helper</class>
+			</modulefactory>
+		</helpers>
+		<blocks>
+			<modulefactory>
+				<class>Hj_Modulefactory_Block</class>
+			</modulefactory>
+		</blocks>
+	</global>
+	<adminhtml>
+		<menu>
+			<modulefactory module="modulefactory">
+				<title>Module Factory</title>
+				<sort_order>100</sort_order>    
+				<action>modulefactory/adminhtml_modulefactory</action>           
+			</modulefactory>
+		</menu>
+		<acl>
+			<resources>
+				<admin translate="title" module="adminhtml">
+					<title>Magento Admin</title>
+					<children>
+						<modulefactory>
+							<title>Module Factory</title>
+							<sort_order>9999</sort_order>
+						</modulefactory>
+					</children>
+				</admin>      
+				
+			</resources>
+		</acl>
+	</adminhtml>
+	<admin>
+		<routers>
+			<modulefactory>
+				<use>admin</use>
+				<args>
+					<module>Hj_Modulefactory</module>
+					<frontName>modulefactory</frontName>
+				</args>
+			</modulefactory>
+		</routers>
+	</admin>
+</config>

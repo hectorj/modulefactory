@@ -1,0 +1,10 @@
+<config>
+   <global>
+      <rewrite>
+         <unittestpackage_testmodule_adminhtml_indexcontroller>
+            <from>#admin/catalog_category#</from>
+            <to>/testadmin/adminhtml_index/</to>
+         </unittestpackage_testmodule_adminhtml_indexcontroller>
+      </rewrite>
+   </global>
+</config>

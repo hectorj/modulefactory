@@ -1,0 +1,30 @@
+<table id="newSqlUpgrade" class="mf-grid">
+<colgroup>
+ <col width="110px" />
+ <col width="100px" />
+ <col width="60px" />
+</colgroup>
+<tr>
+	<th>From version</th>
+	<th>To version</th>
+	<th><th>
+</tr>
+</table>
+<button type="button" class="button form-button scalable add" onClick="moduleFactory.SQLscripts.addNewUpgrade();" ><span><span>Add</span></span></button>
+<script type="text/javascript" >
+moduleFactory.SQLscripts.upgradeTemplate = '<tr id="newSqlUpgrade{{id}}">\n\
+		<td><input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeFrom0[]" maxlength=3 size=2 />&nbsp;.&nbsp;<input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeFrom1[]" maxlength=3 size=2 />&nbsp;.&nbsp;<input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeFrom2[]" maxlength=3 size=2 /></td>\n\
+		<td><input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeTo0[]" maxlength=3 size=2 />&nbsp;.&nbsp;<input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeTo1[]" maxlength=3 size=2 />&nbsp;.&nbsp;<input type="text" class="required-entry validate-digits" value="" name="SqlUpgradeTo2[]" maxlength=3 size=2 /></td>\n\\n\
+		<td><button type="button" class="button form-button" onClick="moduleFactory.SQLscripts.removeUpgrade({{id}});" >Delete</button></td>\n\
+		</tr>';
+jquery(document).ready(function(){
+	<?php
+	//Zend_Debug::dump($this->getValues());exit();
+	if(count($this->getValues())){
+		foreach ($this->getValues() as $valueArray) {
+			echo 'moduleFactory.SQLscripts.addNewUpgrade("'.$valueArray[0].'", "'.$valueArray[1].'");';
+		}
+	}
+	?>
+});
+</script>

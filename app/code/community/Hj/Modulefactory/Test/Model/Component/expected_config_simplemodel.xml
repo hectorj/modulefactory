@@ -1,0 +1,9 @@
+<config>
+   <global>
+      <models>
+         <testmodule>
+            <class>Unittestpackage_Testmodule_Model</class>
+         </testmodule>
+      </models>
+   </global>
+</config>

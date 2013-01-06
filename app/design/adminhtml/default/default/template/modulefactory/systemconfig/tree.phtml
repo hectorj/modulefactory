@@ -1,0 +1,105 @@
+<div id="SystemConfigTree">
+	<?php echo $this->loadCurrentConfig(); ?>
+</div>
+<div>
+	<button type="button" id="addSystemConfigTab-button" class="scalable button add" onclick="addSystemConfigChild(jquery('#SystemConfigTree'))" ><span><span>Add a tab</span></span></button>
+</div>
+<div id="fieldPopupTemplate" style="display:none;">
+	<div id="fieldPopup__num__" title="Field : __name__">
+		<p><label class="pathLabel" for="fieldId__num__">Path :</label> __path__/<input type="text" id="fieldId__num__" class="id" value="__id__"/></p>
+		<p><label for="fieldType__num__">Type :</label> <input type="text" id="fieldType__num__" class="type" value="text"/></p>
+	</div>
+</div>
+<input type="hidden" value="" name="system_config_xml_tree" id="system_config_xml_tree" />
+<script type="text/javascript">
+var addedSysconfigIdCount=0;
+function openFieldPopup(node){
+	var popupSelector='#fieldPopup'+node.attr('num');
+	if(!jquery(popupSelector).length){
+		var popup=jquery('#fieldPopupTemplate').html();
+		popup=popup.replace(/__num__/g, addedSysconfigIdCount);
+		popup=popup.replace(/__name__/g, 'new');
+		jquery('body').append(popup);
+		jquery('#fieldPopup'+addedSysconfigIdCount).dialog({modal:true,minWidth:600,buttons:{'Save':function(){closeFieldPopup(jquery(this), node);}},resizable:false,draggable:false});
+	} else {
+		jquery(popupSelector).dialog('option', 'title', 'Field : '+jquery('#SystemConfigTree').jstree('get_text', node));
+		jquery(popupSelector).dialog('open');
+	}
+	var path=jquery('#SystemConfigTree').jstree('get_path', node, true);
+	path=(String(path).replace(/,/g, '/'));
+	path=path.substr(path.indexOf('/')+1);
+	path=path.substr(0, path.indexOf('/', path.indexOf('/')+1));
+	jquery(popupSelector).find('label.pathLabel').html(path);
+	jquery(popupSelector).find('input.id').val(node.attr('id'));
+	jquery('.ui-dialog-titlebar-close').remove();
+}
+function configname_check(str){
+	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+var renameSystemconfig = function(event, data){
+	var checkedName=configname_check(data.rslt.new_name);
+	if(!checkedName.length){
+		jquery('#ComponentsTree').jstree('rename_node', data.rslt.obj, data.rslt.old_name);
+	} else {
+		if(checkedName!=data.rslt.new_name){
+			jquery('#ComponentsTree').jstree('rename_node', data.rslt.obj, checkedName);
+		}
+	}
+}
+function closeFieldPopup(popup, node){
+	node.attr('id', popup.find('input.id').val());
+	node.attr('fieldType', popup.find('input.type').val());
+	popup.dialog('close');
+}
+var addSystemConfigChild = function(node){
+	var type = node.attr('rel');
+	var newType;
+	if(type=='tab'){
+		newType='section';
+	} else if (type=='section'){
+		newType='group';
+	} else if(type=='group'){
+		newType='field';
+	} else {//type=root
+		newType='tab';
+	}
+	var child=jquery('#SystemConfigTree').jstree('create_node', node, 'inside', {'attr':{'id':'new'+newType+addedSysconfigIdCount,'num':addedSysconfigIdCount,'user_created':1},'data':'new'}, function(child){this.open_node(node);this.rename(child);});
+	if(node.attr('rel')=='group'){
+		openFieldPopup(child);
+	}
+	addedSysconfigIdCount++;
+}
+var systemconfigContextualMenu=function(obj){
+	var type = obj.attr('rel');
+	var actions={};
+	if(type=='tab'){
+		actions.addPage={'label' :'Add a config section', 'action':addSystemConfigChild};
+	} else if (type=='section'){
+		actions.addFieldset={'label' :'Add a group', 'action':addSystemConfigChild};
+	} else if(type=='group'){
+		actions.addField={'label' :'Add a field', 'action':addSystemConfigChild};
+	} else if(obj.attr('user_created')==1){//type=='field'
+		actions.configField={'label' :'Properties', 'action':openFieldPopup};
+	}
+	if(obj.attr('user_created')==1){
+		if(type!='field'){
+			actions.setcode={'label':'Set id code', 'action':function(node){node.attr('id', prompt('New code', node.attr('id')))}};
+		}
+		actions.rename={'label':'Rename','action':function(node){this.rename(node)}};
+		actions.remove={'label':'Delete','action':function(node){if(confirm('Are you sure you want to delete this node (and it\'s children) ?')){this.delete_node(node);}}};
+	}
+	return actions;
+}
+jquery(document).ready(function(){
+	jquery('#SystemConfigTree').bind('rename.jstree', renameSystemconfig).jstree({'plugins' : ['html_data', 'ui', 'themes', 'crrm', 'contextmenu', 'types', 'dnd', 'xml_data'],
+					'core':{'html_titles':true},
+					'types':{'valid_children':['tab'],'types':{
+							'tab':{'max_depth' : 4,'valid_children' : [ 'section' ]},
+							'section':{'valid_children' : [ 'group' ]},
+							'group':{'valid_children' : [ 'field' ]},
+							'field':{}
+					}},
+					'contextmenu':{'select_node':true,'items':systemconfigContextualMenu}
+	});
+});
+</script>

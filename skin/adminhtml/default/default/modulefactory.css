@@ -1,0 +1,7 @@
+#modulefactory_form_override_block td.label, #modulefactory_form_override_helper td.label, #modulefactory_form_override_model td.label { width:49%;}
+#modulefactory_form_override_block td.value, #modulefactory_form_override_helper td.value, #modulefactory_form_override_model td.value { width:49%;}
+#modulefactory_form_general td.label {min-width:300px;}
+#modulefactory_form_general td.label label {width:auto !important;}
+#addSystemConfigTab-button{margin-top:15px;}
+#routersContainer{background-color:#FAFAFA;border:1px solid #D6D6D6;margin-bottom:20px;padding:5px 1000px 5px 5px;width:100%;}
+#advice-required-entry-SqlUpgradeTo\[\]{margin-left:85px;}

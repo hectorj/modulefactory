@@ -1,0 +1,17 @@
+<?php echo '<?php'."\n";?>
+<?php 
+if($this->getRequires() && count($this->getRequires())){
+	foreach ($this->getRequires() as $require) {
+		echo 'require_once(\''.$require.'\');'."\n";
+	}
+}
+if($this->getIncludes() && count($this->getIncludes())){
+	foreach ($this->getIncludes() as $include) {
+		echo 'include_once(\''.$include.'\');'."\n";
+	}
+}
+?>
+class <?php echo $this->getClassName(); ?> <?php if($this->getExtends()){ echo 'extends '.$this->getExtends().' ';}?>{
+	
+}
+<?php echo '?>';?>
