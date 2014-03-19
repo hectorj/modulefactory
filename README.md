@@ -1,10 +1,12 @@
+Important note : this project isn't finished, and is in stand-by. I may start working on it again later. For now results are variable, and it seems there is still some bugs. If someone want to use this code, go ahead.
+
 moduleFactory tool to easily create bases of a Magento's module (Magento CE >= 1.5).
 
 
 ----
 
 
-Online tool is available here : http://modulefactory.hectorj.net/
+Online tool is available here : http://modulefactory.hectorj.net/ [not available anymore]
 
 
 ----
